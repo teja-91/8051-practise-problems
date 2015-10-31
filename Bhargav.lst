@@ -1,0 +1,84 @@
+A51 MACRO ASSEMBLER  BHARGAV                                                              10/28/2015 14:26:36 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02c
+OBJECT MODULE PLACED IN .\Objects\Bhargav.obj
+ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE Bhargav.a51 SET(SMALL) DEBUG PRINT(.\Listings\Bhargav.lst) OBJECT(.\Obj
+                      ects\Bhargav.obj) EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG 0000H
+0000 803E              2                     SJMP 0040H ; Jump to main program
+                       3             
+000B                   4     ORG 000BH
+000B 0163              5                     AJMP TIMER0H ; Jump to TIMER0 ISR
+                       6             
+001B                   7     ORG 001BH
+001B 016C              8                     AJMP TIMER1H ; jump to TIMER1 ISR
+                       9             
+0040                  10     ORG 0040H
+0040 75A000           11                     MOV P2,#00H ; Initialize Port2 to be output port
+0043 758999           12                     MOV TMOD,#99H ; T1 &T0 IN mode 1
+0046 75A8FF           13                     MOV IE,#0FFH ; Enable Timer 0 and Timer 1 Interrupt
+0049 758D00           14                     MOV TH1,#00H ; Initialization of timer1 
+004C 758B00           15                     MOV TL1,#00H ; and timer 0 registers
+004F 758C00           16                     MOV TH0,#00H ; for maximum delay 
+0052 758A00           17                     MOV TL0,#00H
+0055 D28C             18                     SETB TR0 ; Run Timer0
+0057 8590E0           19                     MOV ACC,P1 
+005A 85E0A0           20                     MOV P2,ACC ; move the value of Port1 to Port2
+005D C2B0             21                     CLR P3.0 ; since initially TF0 and
+005F C2B1             22                     CLR P3.1 ; TF1 are zeros
+0061                  23     LOOP:   
+0061 80FE             24                     SJMP LOOP ; dummy loop
+                      25     
+                      26     
+0063                  27     TIMER0H:
+0063 C28C             28                     CLR TR0 ; stop timer0
+0065 C28F             29                     CLR TF1 ; Clear timer1 overflow flag
+0067 B2B1             30                     CPL P3.1 ; update value of P3.1 by complementing 
+0069 D28E             31                     SETB TR1 ; Run Timer1
+006B 32               32                     RETI
+                      33     
+006C                  34     TIMER1H:
+006C C28E             35                     CLR TR1 ; stop Timer1
+006E C28D             36                     CLR TF0 ; Clear Timer0 overflow flag
+0070 B2B0             37                     CPL P3.0 ; Update value of P3.0 by complementing
+0072 85A0E0           38                     MOV ACC,P2
+0075 05E0             39                     INC ACC ; increment the value in P2
+0077 85E0A0           40                     MOV P2,ACC ; Move the incremented value to port 2
+007A D28C             41                     SETB TR0 ; Run Timer0
+007C 32               42                     RETI    
+                      43     END
+A51 MACRO ASSEMBLER  BHARGAV                                                              10/28/2015 14:26:36 PAGE     2
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . .  D ADDR   00E0H   A   
+IE . . . . . . . .  D ADDR   00A8H   A   
+LOOP . . . . . . .  C ADDR   0061H   A   
+P1 . . . . . . . .  D ADDR   0090H   A   
+P2 . . . . . . . .  D ADDR   00A0H   A   
+P3 . . . . . . . .  D ADDR   00B0H   A   
+TF0. . . . . . . .  B ADDR   0088H.5 A   
+TF1. . . . . . . .  B ADDR   0088H.7 A   
+TH0. . . . . . . .  D ADDR   008CH   A   
+TH1. . . . . . . .  D ADDR   008DH   A   
+TIMER0H. . . . . .  C ADDR   0063H   A   
+TIMER1H. . . . . .  C ADDR   006CH   A   
+TL0. . . . . . . .  D ADDR   008AH   A   
+TL1. . . . . . . .  D ADDR   008BH   A   
+TMOD . . . . . . .  D ADDR   0089H   A   
+TR0. . . . . . . .  B ADDR   0088H.4 A   
+TR1. . . . . . . .  B ADDR   0088H.6 A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
